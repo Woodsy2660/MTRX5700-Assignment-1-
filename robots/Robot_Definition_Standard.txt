@@ -1,0 +1,8 @@
+MTRX5700 The Merchants Robot Definition Standard:
+
+<Name of Robot>
+<Joint_Type_List = [R,R,R,R,R,P]> // List of joints starting from base to end effector
+<J1 = [q1,0,0,0]> // DH Parameter list of Joint 1
+<J2 = [q2,163,0,pi/2]> // DH Parameter list of Joint 2
+
+And so on until you have defined the parameters for each joint you have described.

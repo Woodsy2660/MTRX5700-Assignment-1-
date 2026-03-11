@@ -1,0 +1,5 @@
+MTRX5700 The Merchants Robot Input Standard:
+Used as an input 
+
+<Robot_Name>
+<q_values = [q1,q2,q3,q4,q5,q6]>
