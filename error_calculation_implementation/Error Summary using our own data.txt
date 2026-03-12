@@ -1,0 +1,117 @@
+
+Configuration 1:
+  Position error: 289.84 mm
+    X error: 98.74 mm
+    Y error: -233.60 mm
+    Z error: 140.32 mm
+  Rotation error: 2.18 degrees
+    RX error: 0.02 deg
+    RY error: -2.17 deg
+    RZ error: 0.07 deg
+
+
+Configuration 2:
+  Position error: 293.89 mm
+    X error: -18.15 mm
+    Y error: -291.95 mm
+    Z error: -28.45 mm
+  Rotation error: 2.13 degrees
+    RX error: 1.01 deg
+    RY error: -1.88 deg
+    RZ error: 0.02 deg
+
+
+Configuration 3:
+  Position error: 290.75 mm
+    X error: -0.59 mm
+    Y error: 112.90 mm
+    Z error: -267.94 mm
+  Rotation error: 2.00 degrees
+    RX error: -1.01 deg
+    RY error: 0.65 deg
+    RZ error: -1.59 deg
+
+
+Configuration 4:
+  Position error: 293.74 mm
+    X error: 123.98 mm
+    Y error: -259.48 mm
+    Z error: -59.87 mm
+  Rotation error: 2.12 degrees
+    RX error: 1.11 deg
+    RY error: -1.20 deg
+    RZ error: -1.36 deg
+
+
+Configuration 5:
+  Position error: 293.04 mm
+    X error: 35.55 mm
+    Y error: 290.86 mm
+    Z error: -3.12 mm
+  Rotation error: 2.00 degrees
+    RX error: -1.11 deg
+    RY error: 1.66 deg
+    RZ error: 0.01 deg
+
+
+Configuration 6:
+  Position error: 292.00 mm
+    X error: 142.02 mm
+    Y error: 254.71 mm
+    Z error: -14.68 mm
+  Rotation error: 1.81 degrees
+    RX error: -0.13 deg
+    RY error: 1.81 deg
+    RZ error: 0.01 deg
+
+
+Configuration 7:
+  Position error: 293.90 mm
+    X error: 117.35 mm
+    Y error: -240.97 mm
+    Z error: 120.58 mm
+  Rotation error: 2.12 degrees
+    RX error: 1.75 deg
+    RY error: -1.11 deg
+    RZ error: 0.45 deg
+
+
+Configuration 8:
+  Position error: 292.95 mm
+    X error: -286.86 mm
+    Y error: 58.68 mm
+    Z error: -9.29 mm
+  Rotation error: 2.16 degrees
+    RX error: -2.00 deg
+    RY error: -0.81 deg
+    RZ error: -0.01 deg
+
+
+Configuration 9:
+  Position error: 292.58 mm
+    X error: -290.55 mm
+    Y error: -33.30 mm
+    Z error: -8.71 mm
+  Rotation error: 2.16 degrees
+    RX error: -1.65 deg
+    RY error: -1.39 deg
+    RZ error: 0.05 deg
+
+
+Configuration 10:
+  Position error: 292.95 mm
+    X error: -286.86 mm
+    Y error: 58.68 mm
+    Z error: -9.29 mm
+  Rotation error: 2.16 degrees
+    RX error: -2.00 deg
+    RY error: -0.81 deg
+    RZ error: -0.01 deg
+
+
+
+OVERALL:
+Mean position error: 292.56 mm
+Max position error: 293.90 mm
+Mean orientation error: 2.08 deg
+Max orientation error: 2.18 deg
