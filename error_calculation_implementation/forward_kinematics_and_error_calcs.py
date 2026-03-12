@@ -42,7 +42,7 @@ def dh_transform(theta, d, a, alpha):
 
 
 
-def forward_kinematics(joint_angles):
+def forward_kinematics_calc(joint_angles):
     """
     Computes forward kinematics to get the final transformation matrix from base to end effector
     
@@ -118,7 +118,7 @@ def get_tcp_pose(joint_angles):
     Get TCP position and orientation from joint angles ( [q1, q2, q3, q4, q5, q6] )
     """
 
-    T = forward_kinematics(joint_angles)
+    T = forward_kinematics_calc(joint_angles)
     
     position = extract_position(T)
     R = extract_rotation_matrix(T)
@@ -233,7 +233,7 @@ if __name__ == "__main__":
         pos_gt = data['position_gt']
         orient_gt = data['orientation_gt']
 
-        T_model = forward_kinematics(q)
+        T_model = forward_kinematics_calc(q)
         T_gt = build_transformation_matrix_from_csv(pos_gt, orient_gt)   
 
         e_trans, e_rot, t_err, R_err = calculate_Tmatrix_errors(T_model, T_gt)  
