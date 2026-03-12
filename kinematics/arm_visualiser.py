@@ -8,15 +8,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-def plot_robot(frames, q: np.ndarray = None, ax: plt.Axes = None, show: bool = True) -> plt.Axes:
+def plot_robot(frames, q: np.ndarray = None, ax: plt.Axes = None, show: bool = True, robot_name: str = "Robot") -> plt.Axes:
     """
-    Plot the UR5e robot arm for a given joint configuration.
+    Plot the robot arm for a given joint configuration.
 
     Parameters
     ----------
-    q    : joint angles in radians, shape (6,). Defaults to zero config.
-    ax   : existing matplotlib 3D axes to draw on. Creates new figure if None.
-    show : call plt.show() at the end if True.
+    frames     : list of 4x4 homogeneous transforms (one per joint)
+    q          : joint angles in radians, shape (n,). Defaults to zero config.
+    ax         : existing matplotlib 3D axes to draw on. Creates new figure if None.
+    show       : call plt.show() at the end if True.
+    robot_name : name of the robot to display in the title.
 
     Returns
     -------
@@ -26,17 +28,11 @@ def plot_robot(frames, q: np.ndarray = None, ax: plt.Axes = None, show: bool = T
         fig = plt.figure(figsize=(8, 7))
         ax = fig.add_subplot(111, projection='3d')
 
-    if q is not None:
-        q_str = ", ".join(f"{np.degrees(qi):.1f}°" for qi in q)
-        ax.set_title(f"UR5e  |  q = [{q_str}]")
-    else:
-        ax.set_title("UR5e Kinematic Chain")
-
     # ── Collect joint origins (base + one per joint) ─────────────────────────
     origins = [np.zeros(3)]          # base frame origin
     for T in frames:
         origins.append(T[:3, 3])
-    origins = np.array(origins)      # shape (7, 3)
+    origins = np.array(origins)      # shape (n+1, 3)
 
     # ── Draw links ───────────────────────────────────────────────────────────
     ax.plot(origins[:, 0], origins[:, 1], origins[:, 2],
@@ -56,21 +52,24 @@ def plot_robot(frames, q: np.ndarray = None, ax: plt.Axes = None, show: bool = T
         _draw_frame(ax, T, axis_len, colors)
 
     # ── Formatting ───────────────────────────────────────────────────────────
-    ax.set_xlabel('X (m)')
-    ax.set_ylabel('Y (m)')
-    ax.set_zlabel('Z (m)')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
 
-    q_str = ', '.join(f'{np.degrees(qi):.1f}°' for qi in q)
-    ax.set_title(f'UR5e  |  q = [{q_str}]')
+    if q is not None:
+        q_str = ', '.join(f'{np.degrees(qi):.1f}°' for qi in q)
+        ax.set_title(f'{robot_name}  |  q = [{q_str}]')
+    else:
+        ax.set_title(f'{robot_name} Kinematic Chain')
 
     _set_equal_axes(ax, origins)
 
     # Legend proxy for axes colours
     from matplotlib.lines import Line2D
     legend_elements = [
-        Line2D([0], [0], color='red',      lw=2, label='x-axis'),
-        Line2D([0], [0], color='green',    lw=2, label='y-axis'),
-        Line2D([0], [0], color='blue',     lw=2, label='z-axis'),
+        Line2D([0], [0], color='red',       lw=2, label='x-axis'),
+        Line2D([0], [0], color='green',     lw=2, label='y-axis'),
+        Line2D([0], [0], color='blue',      lw=2, label='z-axis'),
         Line2D([0], [0], color='steelblue', lw=3, label='link'),
     ]
     ax.legend(handles=legend_elements, loc='upper left', fontsize=8)
@@ -104,5 +103,4 @@ def _set_equal_axes(ax, points: np.ndarray) -> None:
 
     ax.set_xlim(centre[0] - half_range, centre[0] + half_range)
     ax.set_ylim(centre[1] - half_range, centre[1] + half_range)
-    ax.set_zlim(0, centre[2] + half_range)
-
+    ax.set_zlim(centre[2] - half_range, centre[2] + half_range)
