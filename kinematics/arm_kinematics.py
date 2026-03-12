@@ -9,79 +9,75 @@ This file composes 'dh_table.py'
 
 from typing import List, Tuple
 import numpy as np
-import sympy as sp
 
 from .dh_table import DHTable
-
 
 class ArmKinematics:
     """
     Computes forward kinematics for a serial manipulator
 
-    Takes DH parameters and joint types at construction, builds
-    a DHTable internally, exposes methods to compute the full kinematic chain.
+    Takes a DHTable instance at construction, exposes methods to compute
+    the full kinematic chain.
 
-    Parameters are: dh_params, joint_types, t_tool
+    Parameters are: dh_table, t_tool
     """
 
     def __init__(
         self,
-        dh_params: np.ndarray,
-        joint_types: List[str],
+        dh_table: DHTable,
         t_tool: np.ndarray = None,
     ) -> None:
 
-        self._dh_table = DHTable(dh_params, joint_types)  # call dh_table class in composition
+        self._dh_table = dh_table  # Store the DHTable instance
 
         if t_tool is None:
-            self.t_tool = np.eye(4)  # store tool transform, if none provided use the 4x4 identity
+            self.t_tool = np.eye(4)  # Store tool transform, if none provided use the 4x4 identity
         else:
             self.t_tool = np.asarray(t_tool, dtype=float)
-
+        
     def forward_kinematics(
         self, q: List[float]
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Returns T (homogeneous transform from base to end-effector),
-        R (rotation matrix - top-left 3x3 block of T),
-        p (position vector - top-right column of T)
+        R (rotation matrix (top-left block of T)), p (position vector (top-right column of T))
         """
-        frames = self.all_frames(q)  # get all frame transforms
 
-        # The last frame is the end-effector position
-        T_base_to_ee = frames[-1] @ self.t_tool  # Apply tool transform
+        frames = self.all_frames(q)  # Calls all_frames and returns a list of cumulative transforms 0T1, 0T2, ..., 0TN
 
-        R = T_base_to_ee[:3, :3]  # Extract rotation matrix
-        p = T_base_to_ee[:3, 3]   # Extract position vector
+        T = np.dot(frames[-1], self.t_tool)  # Apply the tool transform to last link frame
 
-        return T_base_to_ee, R, p
+        R = T[:3, :3]  # Slices rotation matrix top left 3x3 block of T
+        p = T[:3, 3]  # Slices position vector top right 3 values
+
+        return T, R, p
+
 
     def all_frames(self, q: List[float]) -> List[np.ndarray]:
         """
-        Compute all cumulative frame transforms from base to each joint.
-
-        Parameters
-        ----------
-        q : List of joint values (angles for revolute, distances for prismatic)
-
-        Returns
-        -------
-        frames : List of 4x4 numpy arrays, T_0_1, T_0_2, ..., T_0_n
+        Compute all cumulative transforms from base to each joint.
+        Returns a list of 4x4 homogeneous transforms.
         """
-        T = np.eye(4)  # Initialize as base frame (identity)
-        frames = []
 
-        # Iterate over each joint
-        for i in range(self._dh_table.num_joints()):
-            # Get the symbolic A matrix for this joint
-            A_sym = self._dh_table.A_matrices[i]
+        T = np.eye(4)  # Creates identity matrix, base frame
 
-            # Substitute the joint variable with actual value
-            q_sym = sp.Symbol(f"q{i+1}")
-            A_numeric = np.array(A_sym.subs(q_sym, q[i]), dtype=float)
+        frames = []  # Create empty list to append to
 
-            # Accumulate the transform
-            T = T @ A_numeric
-            frames.append(T.copy())
+        for i in range(self._dh_table.num_joints()):  # Iterate over number of joints
+
+            A_i = self._dh_table.get_transform(i, q[i])  # Each row is read in DH-table building out each A-matrix
+
+            T = T @ A_i  # Multiply the running transform by A_i
+
+            frames.append(T.copy())  # Append a copy of the current cumulative transform
 
         return frames
+
+
+
+
+
+
+
+
+    

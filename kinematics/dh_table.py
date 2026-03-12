@@ -1,36 +1,11 @@
-# imports 
+# imports
 import re
 import math
 from typing import List, Tuple
 import numpy as np
 import sympy as sp
 
-
-# Parser function that reads the robot text file - currently no error handling can add later
-
-def parse_robot_file(filepath: str) -> Tuple[str, List[str], np.ndarray]:
-   
-    MATH_ENV = {k: getattr(math, k) for k in dir(math) if not k.startswith("_")}
-
-    def _eval(token: str) -> float:
-        token = token.strip()
-        if re.fullmatch(r'q\d+', token):
-            return float('nan')
-        return float(eval(token, {"__builtins__": {}}, MATH_ENV)) 
-
-    with open(filepath) as fh:
-        lines = [re.sub(r'//.*', '', l).strip() for l in fh]
-    lines = [l for l in lines if l]
-
-    name        = re.match(r'<(.+)>', lines[0]).group(1).strip()
-    joint_types = re.search(r'\[([^\]]+)\]', lines[1]).group(1).replace(' ', '').split(',')
-    dh_params   = np.array([
-        [_eval(t) for t in re.search(r'\[([^\]]+)\]', l).group(1).split(',')]
-        for l in lines[2:]
-    ])
-
-    return name, joint_types, dh_params
-
+from .robot_parser import parse_robot_file 
 
 class DHTable:
 
@@ -38,13 +13,9 @@ class DHTable:
         self._dh_params = np.asarray(dh_params, dtype=float) ## takes in the DH table extracted from the text reader function
         self._joint_types = [jt.upper() for jt in joint_types] #creates a list of the join types from the reader and adds to class
 
-        
+
         self.A_matrices = [self._compute_sym_transform(i) for i in range(self.num_joints())] ## compute and store all A matrices on construction of class
 
-        self.T = sp.eye(4) ## compute and store the full base -> end effector transform on construction of class
-        for A in self.A_matrices:
-            self.T = self.T * A
-        self.T = sp.trigsimp(self.T)
 
     @classmethod
     def from_file(cls, filepath: str) -> Tuple['DHTable', str]: ## this is the first thing that runs to instantiate the class
@@ -77,7 +48,6 @@ class DHTable:
             theta, d = _to_sym(theta_raw), q_sym
         return theta, d, _to_sym(a_raw), _to_sym(alpha_raw)
 
-    ################################ DISPLAY CODE USING SYMPY ########################
     ################################ TRANSFORM MATRICIES CODE ###############################
 
     def _compute_sym_transform(self, joint_index: int) -> sp.Matrix: ## Function that creates the A matrix for a given joint (used by joint_index)
@@ -93,6 +63,31 @@ class DHTable:
             [ 0,   0,        0,     1   ],
         ])
         return sp.trigsimp(A)
+
+    def get_transform(self, joint_index: int, q_i: float) -> np.ndarray:
+        """
+        Returns the 4x4 numeric A-matrix for joint_index given live joint value q_i.
+        Substitutes q_i into whichever parameter is stored as nan (the joint variable).
+        """
+        row = self._dh_params[joint_index].copy()
+
+        # Find which column holds nan — that is the joint variable slot
+        # np.isnan returns a boolean array, argmax finds the index of the first True
+        var_col = int(np.argmax(np.isnan(row)))
+        row[var_col] = q_i
+
+        # Unpack in the order your parser stores them: [theta, d, a, alpha]
+        theta, d, a, alpha = row
+
+        ct, st = np.cos(theta), np.sin(theta)
+        ca, sa = np.cos(alpha), np.sin(alpha)
+
+        return np.array([
+            [ct, -st * ca,  st * sa,  a * ct],
+            [st,  ct * ca, -ct * sa,  a * st],
+            [0.0,      sa,       ca,       d],
+            [0.0,     0.0,      0.0,     1.0],
+        ])
 
     ############# EXECUTING CLASS FUNCTIONS AND PRINTING ALL INFO #################
 
@@ -138,22 +133,8 @@ class DHTable:
             cells = "  ".join(cell.rjust(col_widths[c]) for c, cell in enumerate(row))
             print(f"  [ {cells} ]")
 
-## Main code
 
-if __name__ == "__main__":
-    import sys
 
-    if len(sys.argv) < 2:
-        print("Usage: python dh_table.py <robot_definition.txt>")
-        sys.exit(1)
 
-    filepath = sys.argv[1] ## parses in the file name 
-    table, name = DHTable.from_file(filepath) ## instantiates new class with the .from_file function
-
-    print(f"\nRobot: {name}  ({table.num_joints()} joints)") ## printing file 
-    table.print_table(name)
-    table.print_all_transforms(name)
-
-        
         
 

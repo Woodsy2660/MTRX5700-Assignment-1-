@@ -1,29 +1,20 @@
 """
 Plots links and coordinate frames for a serial manipulator.
-Takes an ArmKinematics instance and joint configuration, draws the robot in 3D.
+Takes a list of 4x4 homogeneous transforms (one per joint) and draws the robot in 3D.
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from typing import List
 
 
-def plot_robot(
-    arm_kinematics,
-    q: np.ndarray,
-    robot_name: str = "Robot",
-    ax: plt.Axes = None,
-    show: bool = True
-) -> plt.Axes:
+def plot_robot(frames, q: np.ndarray = None, ax: plt.Axes = None, show: bool = True) -> plt.Axes:
     """
-    Plot a robot arm for a given joint configuration.
+    Plot the UR5e robot arm for a given joint configuration.
 
     Parameters
     ----------
-    arm_kinematics : ArmKinematics instance with DH parameters
-    q    : joint angles/positions (radians/meters), shape (n_joints,)
-    robot_name : name of the robot for display
+    q    : joint angles in radians, shape (6,). Defaults to zero config.
     ax   : existing matplotlib 3D axes to draw on. Creates new figure if None.
     show : call plt.show() at the end if True.
 
@@ -31,23 +22,21 @@ def plot_robot(
     -------
     ax : the matplotlib 3D axes object
     """
-    # Compute all frame transforms using the ArmKinematics instance
-    frames = arm_kinematics.all_frames(q)
-
-    # Create figure if needed
     if ax is None:
-        fig = plt.figure(figsize=(10, 8))
+        fig = plt.figure(figsize=(8, 7))
         ax = fig.add_subplot(111, projection='3d')
 
-    # Format joint angles for display
-    q_str = ", ".join(f"{np.degrees(qi):.1f}°" for qi in q)
-    ax.set_title(f"{robot_name}  |  q = [{q_str}]")
+    if q is not None:
+        q_str = ", ".join(f"{np.degrees(qi):.1f}°" for qi in q)
+        ax.set_title(f"UR5e  |  q = [{q_str}]")
+    else:
+        ax.set_title("UR5e Kinematic Chain")
 
     # ── Collect joint origins (base + one per joint) ─────────────────────────
-    origins = [np.zeros(3)]  # base frame origin
+    origins = [np.zeros(3)]          # base frame origin
     for T in frames:
         origins.append(T[:3, 3])
-    origins = np.array(origins)  # shape (n_joints+1, 3)
+    origins = np.array(origins)      # shape (7, 3)
 
     # ── Draw links ───────────────────────────────────────────────────────────
     ax.plot(origins[:, 0], origins[:, 1], origins[:, 2],
@@ -55,7 +44,7 @@ def plot_robot(
             zorder=3, label='Links')
 
     # ── Draw coordinate frames at each joint ─────────────────────────────────
-    axis_len = 0.05  # 50 mm arrow length
+    axis_len = 0.05   # 50 mm arrow length
     colors = {'x': 'red', 'y': 'green', 'z': 'blue'}
 
     # Base frame
@@ -69,6 +58,9 @@ def plot_robot(
     ax.set_xlabel('X (m)')
     ax.set_ylabel('Y (m)')
     ax.set_zlabel('Z (m)')
+
+    q_str = ', '.join(f'{np.degrees(qi):.1f}°' for qi in q)
+    ax.set_title(f'UR5e  |  q = [{q_str}]')
 
     _set_equal_axes(ax, origins)
 
@@ -112,3 +104,4 @@ def _set_equal_axes(ax, points: np.ndarray) -> None:
     ax.set_xlim(centre[0] - half_range, centre[0] + half_range)
     ax.set_ylim(centre[1] - half_range, centre[1] + half_range)
     ax.set_zlim(0, centre[2] + half_range)
+
