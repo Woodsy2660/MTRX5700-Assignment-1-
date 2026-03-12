@@ -1,68 +1,29 @@
 """
 Plots links and coordinate frames for a serial manipulator.
-Takes a list of 4x4 homogeneous transforms (one per joint) and draws the robot in 3D.
-
-Currently uses hardcoded UR5e DH parameters at q=0 to compute frames internally.
-TODO: replace _compute_frames_hardcoded() call with arm_kinematics.all_frames(q)
-      once arm_kinematics.py is working.
+Takes an ArmKinematics instance and joint configuration, draws the robot in 3D.
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from typing import List
 
 
-# ── Hardcoded UR5e DH params [theta_offset, d, a, alpha] in metres ──────────
-# Order matches dh_table.py: row = [theta, d, a, alpha]
-# Variable joints have theta_offset=0 (q is added at call time)
-_UR5E_DH = np.array([
-    [0,  0.1625,  0.0,     np.pi/2],
-    [0,  0.0,    -0.425,   0.0    ],
-    [0,  0.0,    -0.3922,  0.0    ],
-    [0,  0.1333,  0.0,     np.pi/2],
-    [0,  0.0997,  0.0,    -np.pi/2],
-    [0,  0.0996,  0.0,     0.0    ],
-])
-
-
-def _single_transform(theta: float, d: float, a: float, alpha: float) -> np.ndarray:
-    """Standard DH homogeneous transform for one joint."""
-    ct, st = np.cos(theta), np.sin(theta)
-    ca, sa = np.cos(alpha), np.sin(alpha)
-    return np.array([
-        [ct, -st * ca,  st * sa, a * ct],
-        [st,  ct * ca, -ct * sa, a * st],
-        [0,   sa,       ca,      d     ],
-        [0,   0,        0,       1     ],
-    ])
-
-
-def _compute_frames(q: np.ndarray) -> list:
+def plot_robot(
+    arm_kinematics,
+    q: np.ndarray,
+    robot_name: str = "Robot",
+    ax: plt.Axes = None,
+    show: bool = True
+) -> plt.Axes:
     """
-    Compute all cumulative base-to-joint transforms for given joint angles q.
-    Returns list of 4x4 arrays: [T_0_1, T_0_2, ..., T_0_6]
-
-    TODO: replace this with arm_kinematics.ArmKinematics.all_frames(q)
-          once arm_kinematics.py is complete.
-    """
-    T = np.eye(4)
-    frames = []
-    for i, row in enumerate(_UR5E_DH):
-        theta_offset, d, a, alpha = row
-        theta = theta_offset + q[i]
-        A = _single_transform(theta, d, a, alpha)
-        T = T @ A
-        frames.append(T.copy())
-    return frames
-
-
-def plot_robot(q: np.ndarray = None, ax: plt.Axes = None, show: bool = True) -> plt.Axes:
-    """
-    Plot the UR5e robot arm for a given joint configuration.
+    Plot a robot arm for a given joint configuration.
 
     Parameters
     ----------
-    q    : joint angles in radians, shape (6,). Defaults to zero config.
+    arm_kinematics : ArmKinematics instance with DH parameters
+    q    : joint angles/positions (radians/meters), shape (n_joints,)
+    robot_name : name of the robot for display
     ax   : existing matplotlib 3D axes to draw on. Creates new figure if None.
     show : call plt.show() at the end if True.
 
@@ -70,21 +31,23 @@ def plot_robot(q: np.ndarray = None, ax: plt.Axes = None, show: bool = True) -> 
     -------
     ax : the matplotlib 3D axes object
     """
-    if q is None:
-        q = np.zeros(6)
-    q = np.asarray(q, dtype=float)
+    # Compute all frame transforms using the ArmKinematics instance
+    frames = arm_kinematics.all_frames(q)
 
-    frames = _compute_frames(q)
-
+    # Create figure if needed
     if ax is None:
-        fig = plt.figure(figsize=(8, 7))
+        fig = plt.figure(figsize=(10, 8))
         ax = fig.add_subplot(111, projection='3d')
 
+    # Format joint angles for display
+    q_str = ", ".join(f"{np.degrees(qi):.1f}°" for qi in q)
+    ax.set_title(f"{robot_name}  |  q = [{q_str}]")
+
     # ── Collect joint origins (base + one per joint) ─────────────────────────
-    origins = [np.zeros(3)]          # base frame origin
+    origins = [np.zeros(3)]  # base frame origin
     for T in frames:
         origins.append(T[:3, 3])
-    origins = np.array(origins)      # shape (7, 3)
+    origins = np.array(origins)  # shape (n_joints+1, 3)
 
     # ── Draw links ───────────────────────────────────────────────────────────
     ax.plot(origins[:, 0], origins[:, 1], origins[:, 2],
@@ -92,7 +55,7 @@ def plot_robot(q: np.ndarray = None, ax: plt.Axes = None, show: bool = True) -> 
             zorder=3, label='Links')
 
     # ── Draw coordinate frames at each joint ─────────────────────────────────
-    axis_len = 0.05   # 50 mm arrow length
+    axis_len = 0.05  # 50 mm arrow length
     colors = {'x': 'red', 'y': 'green', 'z': 'blue'}
 
     # Base frame
@@ -106,9 +69,6 @@ def plot_robot(q: np.ndarray = None, ax: plt.Axes = None, show: bool = True) -> 
     ax.set_xlabel('X (m)')
     ax.set_ylabel('Y (m)')
     ax.set_zlabel('Z (m)')
-
-    q_str = ', '.join(f'{np.degrees(qi):.1f}°' for qi in q)
-    ax.set_title(f'UR5e  |  q = [{q_str}]')
 
     _set_equal_axes(ax, origins)
 
@@ -152,16 +112,3 @@ def _set_equal_axes(ax, points: np.ndarray) -> None:
     ax.set_xlim(centre[0] - half_range, centre[0] + half_range)
     ax.set_ylim(centre[1] - half_range, centre[1] + half_range)
     ax.set_zlim(0, centre[2] + half_range)
-
-
-# ── Run directly to preview zero config ──────────────────────────────────────
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) == 7:
-        q_input = np.array([float(x) for x in sys.argv[1:]])
-    else:
-        q_input = np.zeros(6)
-        print("No q provided — showing zero configuration.")
-        print("Usage: python arm_visualiser.py q1 q2 q3 q4 q5 q6  (radians)")
-
-    plot_robot(q_input)
