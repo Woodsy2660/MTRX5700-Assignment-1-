@@ -1,4 +1,3 @@
-
 Configuration 1:
   Position error: 289.84 mm
     X error: 98.74 mm
@@ -99,19 +98,20 @@ Configuration 9:
 
 
 Configuration 10:
-  Position error: 292.95 mm
-    X error: -286.86 mm
-    Y error: 58.68 mm
-    Z error: -9.29 mm
-  Rotation error: 2.16 degrees
-    RX error: -2.00 deg
-    RY error: -0.81 deg
-    RZ error: -0.01 deg
+  Position error: 293.02 mm
+    X error: -171.19 mm
+    Y error: -237.53 mm
+    Z error: -11.51 mm
+  Rotation error: 2.20 degrees
+    RX error: -0.08 deg
+    RY error: -2.20 deg
+    RZ error: 0.00 deg
 
 
 
-OVERALL:
-Mean position error: 292.56 mm
+OVERAL:
+
+Mean position error: 292.57 mm
 Max position error: 293.90 mm
-Mean orientation error: 2.08 deg
-Max orientation error: 2.18 deg
+Mean orientation error: 2.09 deg
+Max orientation error: 2.20 deg
