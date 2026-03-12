@@ -44,7 +44,8 @@ def plot_robot(frames, q: np.ndarray = None, ax: plt.Axes = None, show: bool = T
             zorder=3, label='Links')
 
     # ── Draw coordinate frames at each joint ─────────────────────────────────
-    axis_len = 0.05   # 50 mm arrow length
+    span = max((origins.max(axis=0) - origins.min(axis=0)).max(), 1e-3)
+    axis_len = span * 0.12   # 12% of robot span
     colors = {'x': 'red', 'y': 'green', 'z': 'blue'}
 
     # Base frame
