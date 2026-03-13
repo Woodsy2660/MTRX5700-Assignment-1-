@@ -18,9 +18,9 @@ class DHTable:
 
 
     @classmethod
-    def from_file(cls, filepath: str) -> Tuple['DHTable', str]: ## this is the first thing that runs to instantiate the class
-        name, joint_types, dh_params = parse_robot_file(filepath) ## uses the parsing function described above
-        return cls(dh_params, joint_types), name ## returns extracted dh_params and joint types along with robot name
+    def from_file(cls, filepath: str) -> Tuple['DHTable', str, np.ndarray]: ## this is the first thing that runs to instantiate the class
+        name, joint_types, dh_params, q_dot = parse_robot_file(filepath) ## uses the parsing function described above
+        return cls(dh_params, joint_types), name, q_dot ## returns extracted dh_params and joint types along with robot name and q_dot
 
     def num_joints(self) -> int:
         return self._dh_params.shape[0] ## literally just returns the # joints, used later in for loops for creating A matrix tables
@@ -96,7 +96,7 @@ class DHTable:
         print("\n" + "=" * 62)
         print(f"  {header}")
         print("=" * 62)
-        print(f"  {'Joint':<8} {'Type':<8} {'theta (rad)':<16} {'d (mm)':<14} {'a (mm)':<14} {'alpha (rad)'}")
+        print(f"  {'Joint':<8} {'Type':<8} {'theta (rad)':<16} {'d (m)':<14} {'a (m)':<14} {'alpha (rad)'}")
         print("  " + "-" * 58)
         for i, (row, jt) in enumerate(zip(self._dh_params, self._joint_types), 1):
             theta_str = f"q{i}" if math.isnan(row[0]) else f"{row[0]:.4f}"
