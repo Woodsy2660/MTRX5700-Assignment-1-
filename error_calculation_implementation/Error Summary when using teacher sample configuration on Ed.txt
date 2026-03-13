@@ -1,0 +1,181 @@
+
+
+Error Summary when using teacher sample configuration on Ed:
+
+Configuration 1:
+  [SE3]    Position error: 5.43 mm
+  [Simple] Position error: 5.43 mm
+    X error: -0.24 mm
+    Y error: -0.52 mm
+    Z error: -5.40 mm
+  Rotation error: 0.14 degrees
+    RX error: -0.08 deg
+    RY error: -0.11 deg
+    RZ error: 0.01 deg
+   Full Transformation Error: 
+ [[ 9.99998068e-01 -1.58277553e-04 -1.95948015e-03 -2.39337603e-04]
+ [ 1.60922375e-04  9.99999076e-01  1.34967299e-03 -5.17327994e-04]
+ [ 1.95926472e-03 -1.34998571e-03  9.99997169e-01 -5.39978604e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 2:
+  [SE3]    Position error: 5.86 mm
+  [Simple] Position error: 5.86 mm
+    X error: 0.02 mm
+    Y error: -0.59 mm
+    Z error: -5.83 mm
+  Rotation error: 0.22 degrees
+    RX error: 0.17 deg
+    RY error: -0.14 deg
+    RZ error: 0.02 deg
+   Full Transformation Error: 
+ [[ 9.99997072e-01 -2.75681552e-04 -2.40411876e-03  2.22728987e-05]
+ [ 2.68496245e-04  9.99995498e-01 -2.98855942e-03 -5.93534231e-04]
+ [ 2.40493183e-03  2.98790517e-03  9.99992644e-01 -5.83422924e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 3:
+  [SE3]    Position error: 5.76 mm
+  [Simple] Position error: 5.76 mm
+    X error: -0.11 mm
+    Y error: -1.46 mm
+    Z error: -5.57 mm
+  Rotation error: 0.24 degrees
+    RX error: 0.19 deg
+    RY error: -0.15 deg
+    RZ error: -0.01 deg
+   Full Transformation Error: 
+ [[ 9.99996377e-01  1.58617359e-04 -2.68698574e-03 -1.12738947e-04]
+ [-1.67466188e-04  9.99994563e-01 -3.29331300e-03 -1.45592787e-03]
+ [ 2.68644875e-03  3.29375105e-03  9.99990967e-01 -5.57388124e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 4:
+  [SE3]    Position error: 5.98 mm
+  [Simple] Position error: 5.98 mm
+    X error: -0.63 mm
+    Y error: -1.65 mm
+    Z error: -5.71 mm
+  Rotation error: 0.26 degrees
+    RX error: 0.19 deg
+    RY error: -0.17 deg
+    RZ error: -0.00 deg
+   Full Transformation Error: 
+ [[ 9.99995428e-01  6.23636172e-05 -3.02341102e-03 -6.29565559e-04]
+ [-7.23862722e-05  9.99994503e-01 -3.31501965e-03 -1.64792879e-03]
+ [ 3.02318767e-03  3.31522334e-03  9.99989935e-01 -5.71411198e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 5:
+  [SE3]    Position error: 5.99 mm
+  [Simple] Position error: 5.99 mm
+    X error: 5.59 mm
+    Y error: -1.20 mm
+    Z error: -1.81 mm
+  Rotation error: 0.26 degrees
+    RX error: 0.02 deg
+    RY error: -0.13 deg
+    RZ error: 0.22 deg
+   Full Transformation Error: 
+ [[ 9.99989894e-01 -3.82950923e-03 -2.35494978e-03  5.58539676e-03]
+ [ 3.82862825e-03  9.99992599e-01 -3.78491558e-04 -1.19859286e-03]
+ [ 2.35638179e-03  3.69471506e-04  9.99997155e-01 -1.80760863e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 6:
+  [SE3]    Position error: 5.45 mm
+  [Simple] Position error: 5.45 mm
+    X error: 4.97 mm
+    Y error: -1.01 mm
+    Z error: -2.00 mm
+  Rotation error: 0.29 degrees
+    RX error: 0.03 deg
+    RY error: -0.21 deg
+    RZ error: 0.19 deg
+   Full Transformation Error: 
+ [[ 9.99987320e-01 -3.39120652e-03 -3.72271868e-03  4.97009143e-03]
+ [ 3.38943325e-03  9.99994139e-01 -4.82542239e-04 -1.00996556e-03]
+ [ 3.72433327e-03  4.69918214e-04  9.99992954e-01 -2.00051957e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 7:
+  [SE3]    Position error: 5.12 mm
+  [Simple] Position error: 5.12 mm
+    X error: 3.43 mm
+    Y error: 0.26 mm
+    Z error: -3.79 mm
+  Rotation error: 0.17 degrees
+    RX error: -0.13 deg
+    RY error: -0.07 deg
+    RZ error: -0.08 deg
+   Full Transformation Error: 
+ [[ 9.99998446e-01  1.34614025e-03 -1.13819726e-03  3.43020517e-03]
+ [-1.34352050e-03  9.99996454e-01  2.29930812e-03  2.59336418e-04]
+ [ 1.14128842e-03 -2.29777535e-03  9.99996709e-01 -3.79255271e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 8:
+  [SE3]    Position error: 5.46 mm
+  [Simple] Position error: 5.46 mm
+    X error: -1.39 mm
+    Y error: -0.74 mm
+    Z error: -5.23 mm
+  Rotation error: 0.20 degrees
+    RX error: -0.03 deg
+    RY error: -0.20 deg
+    RZ error: 0.00 deg
+   Full Transformation Error: 
+ [[ 9.99993887e-01 -4.62980274e-05 -3.49614427e-03 -1.39300053e-03]
+ [ 4.80584071e-05  9.99999872e-01  5.03437980e-04 -7.37291127e-04]
+ [ 3.49612052e-03 -5.03602922e-04  9.99993762e-01 -5.23225342e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 9:
+  [SE3]    Position error: 5.77 mm
+  [Simple] Position error: 5.77 mm
+    X error: -0.64 mm
+    Y error: -0.02 mm
+    Z error: -5.74 mm
+  Rotation error: 0.15 degrees
+    RX error: -0.05 deg
+    RY error: -0.14 deg
+    RZ error: 0.00 deg
+   Full Transformation Error: 
+ [[ 9.99996897e-01 -6.42905888e-05 -2.49033720e-03 -6.37489461e-04]
+ [ 6.64684653e-05  9.99999615e-01  8.74457855e-04 -1.70015262e-05]
+ [ 2.49028003e-03 -8.74620671e-04  9.99996517e-01 -5.73854307e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+Configuration 10:
+  [SE3]    Position error: 5.37 mm
+  [Simple] Position error: 5.37 mm
+    X error: -1.27 mm
+    Y error: -0.49 mm
+    Z error: -5.19 mm
+  Rotation error: 0.17 degrees
+    RX error: -0.08 deg
+    RY error: -0.15 deg
+    RZ error: 0.01 deg
+   Full Transformation Error: 
+ [[ 9.99996625e-01 -1.51481403e-04 -2.59358740e-03 -1.26590793e-03]
+ [ 1.54953531e-04  9.99999092e-01  1.33858731e-03 -4.88449447e-04]
+ [ 2.59338227e-03 -1.33898467e-03  9.99995741e-01 -5.19244200e-03]
+ [ 0.00000000e+00  0.00000000e+00  0.00000000e+00  1.00000000e+00]] 
+
+
+
+OVERALL:
+
+Mean position error: 5.62 mm
+Max position error: 5.99 mm
+Mean orientation error: 0.21 deg
+Max orientation error: 0.29 deg

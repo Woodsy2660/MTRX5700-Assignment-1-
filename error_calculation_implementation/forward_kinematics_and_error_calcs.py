@@ -10,10 +10,11 @@ import pandas as pd
 
 # DH Parameters 
 DH_PARAMS = {
-    'd': [0.000, 0.000, 0.000, 0.127, 0.100, 0.100],  # meters
-    'a': [0.163, -0.425, -0.392, 0.000, 0.000, 0.000],  # meters
+    'd': [0.163, 0.000, 0.000, 0.127, 0.100, 0.100],  # meters
+    'a': [0.000, -0.425, -0.392, 0.000, 0.000, 0.000],  # meters
     'alpha': [pi/2, 0, 0, pi/2, -pi/2, 0]  # radians
 }
+
 
 
 def dh_transform(theta, d, a, alpha):
@@ -148,7 +149,7 @@ def axis_angle_to_rotation_matrix(rx, ry, rz):
 
 def calculate_Tmatrix_errors(T_model, T_gt):
     """
-    Compute translational and rotational errors 
+    Compute translational and rotational errors using way from ed post
     """
     
     T_gt_inv = np.linalg.inv(T_gt)
@@ -161,11 +162,22 @@ def calculate_Tmatrix_errors(T_model, T_gt):
     # Translational error: magnitude of t_err
     e_trans = np.linalg.norm(t_err)
 
+    
+
     # Rotational error: arccos((Tr(R_err) - 1) / 2)
     cos_theta = np.clip((np.trace(R_err) - 1) / 2, -1.0, 1.0)
     e_rot = np.arccos(cos_theta)
 
-    return e_trans, e_rot, t_err, R_err
+    return e_trans, e_rot, t_err, R_err, T_err
+
+
+
+def calculate_simple_position_error(pos_model, pos_gt):
+    """  Find the simple Euclidean distance: ∥p_model - p_gt∥  """
+    diff = pos_model - pos_gt
+    e_trans_simple = np.linalg.norm(diff)
+    return e_trans_simple, diff  # also return diff for x,y,z breakdown
+
 
 
 def load_ground_truth_csv(filepath):
@@ -236,12 +248,19 @@ if __name__ == "__main__":
         T_model = forward_kinematics_calc(q)
         T_gt = build_transformation_matrix_from_csv(pos_gt, orient_gt)   
 
-        e_trans, e_rot, t_err, R_err = calculate_Tmatrix_errors(T_model, T_gt)  
+        e_trans, e_rot, t_err, R_err, T_err = calculate_Tmatrix_errors(T_model, T_gt)  
         errors_position.append(e_trans)
         errors_orientation.append(e_rot)
 
+
+        pos_model = extract_position(T_model)
+        e_trans_simple, pos_diff = calculate_simple_position_error(pos_model, pos_gt)
+
+
         print(f"Configuration {data['config']}:")
-        print(f"  Position error: {e_trans*1000:.2f} mm")
+        print(f"  [SE3]    Position error: {e_trans*1000:.2f} mm")
+        print(f"  [Simple] Position error: {e_trans_simple*1000:.2f} mm") # simple Euclidian
+        # print(f"  Position error: {e_trans*1000:.2f} mm")
         print(f"    X error: {t_err[0]*1000:.2f} mm")
         print(f"    Y error: {t_err[1]*1000:.2f} mm")
         print(f"    Z error: {t_err[2]*1000:.2f} mm")
@@ -254,6 +273,10 @@ if __name__ == "__main__":
         print(f"    RX error: {np.degrees(rx_err):.2f} deg")
         print(f"    RY error: {np.degrees(ry_err):.2f} deg")
         print(f"    RZ error: {np.degrees(rz_err):.2f} deg")
+        
+
+        print(f"   Full Transformation Error: \n {T_err} " )
+
 
         print("\n")
             
