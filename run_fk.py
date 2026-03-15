@@ -1,5 +1,6 @@
 ### RUNNING INSTRUCTIONS ##
 ## python run_fk.py robots/robotname.txt robots/robotinputname.txt
+## Example: python run_fk.py robots/ur5e.txt robots/ur5einput.txt
 
 import sys
 import math
