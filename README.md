@@ -5,5 +5,5 @@ Please use run_fk.py to run forward kinematics and Jacobian solvers, outputting 
 
 To test different configurations of the robot arm, enter the desired joint angle for each joint across the arm in the robotinput.txt file and run as per instruction in run_fk.py script header comment. 
 
-E.g., if using UR5e, the order of joint angles input is <base, shoulder, elbow, wrist1, wrist2, wrist3> (angles in radians).
+E.g., if using UR5e, the order of joint angles input is <base, shoulder, elbow, wrist1, wrist2, wrist3> in ur5einput.txt.
 
